@@ -1,55 +1,44 @@
-#pragma once
+/////////////////////
+// Model.h
+/////////////////////
 
-// Std. Includes
+#pragma once
+#include "Shader.h"
+#include "Mesh.h"
+// Std includes
+#include <stdio.h>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <map>
 #include <vector>
-
 using namespace std;
-
-// GL Includes
-#include <GL/glew.h> // Contains all the necessery OpenGL includes
+// GL includes
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
-// Assimp
+// Assimp includes
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+//#include <soil.h>
 
-#include "Mesh.h"
-
-GLint TextureFromFile(const char* path, string directory);
-
-class Model
-{
+class Model {
 public:
-  /*  Functions   */
-  // Constructor, expects a filepath to a 3D model.
-  Model(){}
-  Model(GLchar* path);
-
-  // Draws the model, and thus all its meshes
-  void Draw(Shader shader);
-  void Simplify();
-  void Unsimplify();
-  vector<Mesh*> testMeshes;
-  vector<Mesh> meshes;
-
+	Model() {}
+	Model(GLchar* path) { this->LoadModel(path); }
+	void Draw(Shader shader);
 private:
-  /*  Model Data  */
-  string directory;
-  vector<Texture> textures_loaded;	// Stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
 
-  /*  Functions   */
-  // Loads a model and stores the meshes in the meshes vector.
-  void LoadModel(string path);
+	/* Data */
+	vector<Mesh> meshes;
+	string directory;
+	vector <Texture> textures_loaded;
 
-  // Processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
-  void ProcessNode(aiNode* node, const aiScene* scene);
-
-  Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+	/* Functions */
+	void LoadModel(string path);
+	void ProcessNode(aiNode* node, const aiScene* scene);
+	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+	vector<Texture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
+  
 };

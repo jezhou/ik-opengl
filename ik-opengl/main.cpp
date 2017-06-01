@@ -20,6 +20,9 @@
 
 #include <iostream>
 #include <string>
+#include <unistd.h>
+
+
 
 // Properties
 GLuint screenWidth = 800, screenHeight = 600;
@@ -28,7 +31,7 @@ GLuint screenWidth = 800, screenHeight = 600;
 void key_callback   (GLFWwindow* window, int key, int scancode, int action, int mode);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
-void Do_Movement(ModelObject * modelObject);
+void Do_Movement();
 
 // Camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -75,7 +78,21 @@ int main()
 
   // Setup some OpenGL options
   glEnable(GL_DEPTH_TEST);
-
+  
+  // Create the shader to use for the controller
+  char pathToModel[1000];
+  char vertexShaderPath[1000];
+  char fragShaderPath[1000];
+  getcwd(vertexShaderPath, PATH_MAX);
+  strcat(vertexShaderPath, "/shader.vs");
+  getcwd(fragShaderPath, PATH_MAX);
+  strcat(fragShaderPath, "/shader.frag");
+  
+  cout << vertexShaderPath << endl;
+  
+  Shader modelS(vertexShaderPath, fragShaderPath);
+  modelS.Use();
+  
   // Game loop
   while(!glfwWindowShouldClose(window))
   {
@@ -96,7 +113,7 @@ int main()
     glm::mat4 view = camera.GetViewMatrix();
     
     // TODO: Render Chain here
-    
+ 
     // Swap the buffers
     glfwSwapBuffers(window);
   }
@@ -108,7 +125,7 @@ int main()
 #pragma region "User input"
 
 // Moves/alters the camera positions based on user input
-void Do_Movement(ModelObject * modelObject)
+void Do_Movement()
 {
   // Camera controls
   if(keys[GLFW_KEY_W])
@@ -120,38 +137,6 @@ void Do_Movement(ModelObject * modelObject)
   if(keys[GLFW_KEY_D])
     camera.ProcessTranslation(RIGHT, deltaTime * .8);
 
-  if(keys[GLFW_KEY_UP])
-    modelObject->ProcessRotation(FORWARD, deltaTime);
-  if(keys[GLFW_KEY_DOWN])
-    modelObject->ProcessRotation(BACKWARD, deltaTime);
-  if(keys[GLFW_KEY_LEFT])
-    modelObject->ProcessRotation(LEFT, deltaTime);
-  if(keys[GLFW_KEY_RIGHT])
-    modelObject->ProcessRotation(RIGHT, deltaTime);
-
-  if(keys[GLFW_KEY_O]) {
-    modelObject->decimate();
-    decimate_count++;
-  }
-  
-  if(keys[GLFW_KEY_P]) {
-    modelObject->progress();
-  }
-  
-  if(keys[GLFW_KEY_K]) {
-    if(modelObject->step > 1) modelObject->step -= 10;
-    else modelObject->step = 1;
-    
-    cout << "Step is now " << modelObject->step << endl;
-    keys[GLFW_KEY_K] = false;
-  }
-  
-  if(keys[GLFW_KEY_L]) {
-    if(modelObject->step < 100) modelObject->step += 10;
-    else modelObject->step = 100;
-    cout << "Step is now " << modelObject->step << endl;
-    keys[GLFW_KEY_L] = false;
-  }
 }
 
 // Is called whenever a key is pressed/released via GLFW
