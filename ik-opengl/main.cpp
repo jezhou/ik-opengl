@@ -12,6 +12,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Target.h"
+#include "Segment.h"
 
 // GLM Mathemtics
 #include <glm/glm.hpp>
@@ -67,6 +68,7 @@ int main()
 
   // Load our model object
   Target target;
+  Segment segment;
   
   // Game loop
   while(!glfwWindowShouldClose(window))
@@ -90,6 +92,7 @@ int main()
     
     glm::mat4 view = camera.GetViewMatrix();
     target.Render(view, projection);
+    segment.Render(view, projection);
 
     // Swap the buffers
     glfwSwapBuffers(window);
