@@ -13,7 +13,9 @@ enum Camera_Movement {
   FORWARD,
   BACKWARD,
   LEFT,
-  RIGHT
+  RIGHT,
+  UP,
+  DOWN
 };
 
 // Default camera values
@@ -21,7 +23,7 @@ const GLfloat YAW        =  -90.0f;
 const GLfloat PITCH      =  0.0f;
 const GLfloat SPEED      =  3.0f;
 const GLfloat SENSITIVTY =  0.25f;
-const GLfloat ZOOM       =  44.5f;
+const GLfloat ZOOM       =  45.0f;
 
 
 // An abstract camera class that processes input and calculates the corresponding Eular Angles, Vectors and Matrices for use in OpenGL
@@ -69,7 +71,6 @@ public:
   // Returns the view matrix calculated using Eular Angles and the LookAt Matrix
   glm::mat4 GetViewMatrix()
   {
-    updateCameraVectors();
     return glm::lookAt(this->Position, this->Position + this->Front, this->Up);
   }
   
@@ -90,8 +91,8 @@ public:
   // Processes input received from a mouse scroll-wheel event
   void ProcessMouseScroll(GLfloat yoffset)
   {
-    float zoomSmallLimit = 46.0f;
-    float zoomLargeLimit = 44.05f;
+    float zoomSmallLimit = 47.0f;
+    float zoomLargeLimit = 44.5f;
    
     yoffset *= .1f;
     if (this->Zoom >= zoomLargeLimit && this->Zoom <= zoomSmallLimit)
