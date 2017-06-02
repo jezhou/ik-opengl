@@ -36,7 +36,7 @@ public:
   // Functions
   Target();
   void Render(glm::mat4 view, glm::mat4 proj);
-  void ProcessRotation(Camera_Movement direction, GLfloat deltaTime);
+  void ProcessTranslation(Camera_Movement direction, GLfloat deltaTime);
   
 private:
   

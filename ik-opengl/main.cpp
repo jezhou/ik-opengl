@@ -106,19 +106,19 @@ void Do_Movement(Target * target)
 {
   
   if(keys[GLFW_KEY_LEFT_SHIFT] && keys[GLFW_KEY_UP])
-    target->ProcessRotation(FORWARD, deltaTime);
+    target->ProcessTranslation(FORWARD, deltaTime);
   else if(keys[GLFW_KEY_UP])
-    target->ProcessRotation(UP, deltaTime);
+    target->ProcessTranslation(UP, deltaTime);
   
   if(keys[GLFW_KEY_LEFT_SHIFT] && keys[GLFW_KEY_DOWN])
-    target->ProcessRotation(BACKWARD, deltaTime);
+    target->ProcessTranslation(BACKWARD, deltaTime);
   else if(keys[GLFW_KEY_DOWN])
-    target->ProcessRotation(DOWN, deltaTime);
+    target->ProcessTranslation(DOWN, deltaTime);
   
   if(keys[GLFW_KEY_LEFT])
-    target->ProcessRotation(LEFT, deltaTime);
+    target->ProcessTranslation(LEFT, deltaTime);
   if(keys[GLFW_KEY_RIGHT])
-    target->ProcessRotation(RIGHT, deltaTime);
+    target->ProcessTranslation(RIGHT, deltaTime);
 }
 
 // Is called whenever a key is pressed/released via GLFW

@@ -49,12 +49,10 @@ void Target::Render(glm::mat4 view, glm::mat4 proj) {
   glUniformMatrix4fv(glGetUniformLocation(objectShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(proj));
   
   objectModel.Draw(objectShader);
-  
-  cout << position.x << " " << position.y << " " << position.z << endl;
 
 }
 
-void Target::ProcessRotation(Camera_Movement direction, GLfloat deltaTime) {
+void Target::ProcessTranslation(Camera_Movement direction, GLfloat deltaTime) {
   GLfloat velocity = 3.0f * deltaTime;
   if (direction == UP)
     this->position.y += 1.0f * velocity;
