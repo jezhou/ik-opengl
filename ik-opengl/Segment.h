@@ -43,9 +43,10 @@ public:
   glm::vec3 scale;
   float pitch;
   float yaw;
+  float roll;
   
   // Functions
-  Segment();
+  Segment(glm::vec3 base, float magnitude);
   void Render(glm::mat4 view, glm::mat4 proj);
   void ProcessTranslation(Camera_Movement direction, GLfloat deltaTime);
   

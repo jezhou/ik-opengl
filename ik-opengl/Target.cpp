@@ -16,8 +16,8 @@ Target::Target() {
   objectModel = modelM;
   
   // Sets the position / rotation / scale
-  position = glm::vec3(-1, -1, 0);
-  scale = glm::vec3 (.1f, .1f, .1f);
+  position = glm::vec3(0, 0, 0);
+  scale = glm::vec3 (.05f, .05f, .05f);
   pitch = 0.0f;
   yaw = 0.0f;
 }
@@ -32,7 +32,7 @@ void Target::Render(glm::mat4 view, glm::mat4 proj) {
   GLint viewPosLoc = glGetUniformLocation(objectShader.Program, "viewPos");
   
   glUniform3f(objectColorLoc, 1.0f, 1.0f,1.0f);
-  glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+  glUniform3f(lightColorLoc, 1.0f, 0.0f, 0.0f);
   glUniform3f(lightPosLoc, 1.0f ,1.0f, 3.0f);
   glUniform3f(viewPosLoc,0.0, 0.0, 3.0);
   
@@ -42,7 +42,7 @@ void Target::Render(glm::mat4 view, glm::mat4 proj) {
   glm::mat4 S = glm::scale(glm::mat4(1.0f), scale);
   glm::mat4 R = glm::rotate(glm::mat4(1.0f), pitch, glm::vec3(1, 0, 0));
   R = glm::rotate(R, yaw, glm::vec3(0, 0, 1));
-  model = T * S * R;
+  model = T * R * S;
   
   glUniformMatrix4fv(glGetUniformLocation(objectShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
   glUniformMatrix4fv(glGetUniformLocation(objectShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));

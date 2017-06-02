@@ -11,7 +11,7 @@
 #include "Target.h"
 #include "Camera.h"
 
-Segment::Segment() {
+Segment::Segment(glm::vec3 base, float magnitude) {
   
   // Create the shader to use for the controller
   Shader modelS(vertexShaderPath, fragShaderPath);
@@ -22,16 +22,15 @@ Segment::Segment() {
   objectModel = modelM;
   
   // Sets the position / rotation / scale
-  position = glm::vec3(0, 0, 0);
-  scale = glm::vec3 (.1f, .1f, 1.0f);
-  pitch = -45.0f;
-  yaw = -45.0f;
+  position = base;
+  scale = glm::vec3 (1.0f, 1.0f, magnitude);
+  pitch = 0.0f;
+  yaw = 0.0f;
+  roll = 0.0f;
 }
 
 void Segment::Render(glm::mat4 view, glm::mat4 proj) {
-  
-  yaw += 0.01f;
-  
+    
   objectShader.Use();
   
   GLint objectColorLoc = glGetUniformLocation(objectShader.Program, "objectColor");
@@ -47,10 +46,13 @@ void Segment::Render(glm::mat4 view, glm::mat4 proj) {
   // Calculate the toWorld matrix for the model
   glm::mat4 model;
   glm::mat4 T = glm::translate(glm::mat4(1.0f), position);
+  glm::mat4 PT = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -0.5));
+  glm::mat4 PS = glm::scale(glm::mat4(1.0f), glm::vec3 (0.1f, 0.1f, 1.0f));
   glm::mat4 S = glm::scale(glm::mat4(1.0f), scale);
   glm::mat4 R = glm::rotate(glm::mat4(1.0f), pitch, glm::vec3(1, 0, 0));
+  R = glm::rotate(R, roll, glm::vec3(0, 1, 0));
   R = glm::rotate(R, yaw, glm::vec3(0, 0, 1));
-  model = T * R * S;
+  model = T * R * S * PT * PS;
   
   glUniformMatrix4fv(glGetUniformLocation(objectShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
   glUniformMatrix4fv(glGetUniformLocation(objectShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
@@ -62,28 +64,47 @@ void Segment::Render(glm::mat4 view, glm::mat4 proj) {
   // VBO stuff
   
   float vertices[] = {
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, // Bottom face
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
     -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
     -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
     
-    -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
     -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
     -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
     
-    0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+    0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+    0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+    0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+    0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
     
     -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-    0.0f, -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,
+    0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
     
     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-    0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+    0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
   };
   // first, configure the cube's VAO (and VBO)
   unsigned int VBO, cubeVAO;

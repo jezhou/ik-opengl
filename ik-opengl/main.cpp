@@ -28,7 +28,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void Do_Movement(Target * target);
 
 // Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -46,8 +46,9 @@ int main()
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_SAMPLES, 4);
   
-  GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "Model Viewer", nullptr, nullptr);
+  GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "Fast and Backwards Reaching Inverse Kinematic (FABRIK) Solver - Robb & Jesse - CSE 163", nullptr, nullptr);
   glfwMakeContextCurrent(window);
   
   // Set the required callback functions
@@ -65,10 +66,12 @@ int main()
   
   // Setup some OpenGL options
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_MULTISAMPLE);
+
 
   // Load our model object
   Target target;
-  Segment segment;
+  Segment segment(glm::vec3(0, 0, 0), 0.1f);
   
   // Game loop
   while(!glfwWindowShouldClose(window))
