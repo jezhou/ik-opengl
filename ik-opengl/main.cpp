@@ -12,7 +12,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Target.h"
-#include "Segment.h"
+#include "Chain.h"
 
 // GLM Mathemtics
 #include <glm/glm.hpp>
@@ -68,10 +68,16 @@ int main()
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_MULTISAMPLE);
 
-
+  // Load joints
+  vector<glm::vec3> joints;
+  joints.push_back(glm::vec3(0, 0, 0));
+  joints.push_back(glm::vec3(0, 0.5, 0));
+  joints.push_back(glm::vec3(0.5, 0.5, 0));
+  joints.push_back(glm::vec3(1, 0, 0));
+  
   // Load our model object
   Target target;
-  Segment segment(glm::vec3(0, 0, 0), 0.1f);
+  Chain chain(joints, &target);
   
   // Game loop
   while(!glfwWindowShouldClose(window))
@@ -95,7 +101,8 @@ int main()
     
     glm::mat4 view = camera.GetViewMatrix();
     target.Render(view, projection);
-    segment.Render(view, projection);
+    chain.Solve();
+    chain.Render(view, projection);
 
     // Swap the buffers
     glfwSwapBuffers(window);

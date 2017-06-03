@@ -40,26 +40,20 @@
 class Segment {
 public:
   glm::vec3 position;
-  glm::vec3 scale;
-  float pitch;
-  float yaw;
-  float roll;
+  glm::quat quat;
+  float magnitude;
   
   // Functions
-  Segment(glm::vec3 base, float magnitude);
+  Segment(glm::vec3 base, float magnitude, glm::quat dir);
   void Render(glm::mat4 view, glm::mat4 proj);
   void ProcessTranslation(Camera_Movement direction, GLfloat deltaTime);
+  void Set(glm::vec3 base, float magnitude, glm::quat dir);
   
 private:
   
   /* Data */
-  Model objectModel;
-  GLchar* pathToModel      = "/Users/jezhou/Git/classes/s17/ik-opengl/cone.off";
   GLchar* vertexShaderPath = "/Users/jezhou/Git/classes/s17/ik-opengl/seg.vs";
   GLchar* fragShaderPath   = "/Users/jezhou/Git/classes/s17/ik-opengl/seg.frag";
   Shader objectShader;
-  
-  /* Functions */
-  
   
 };
