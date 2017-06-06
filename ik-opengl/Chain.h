@@ -39,6 +39,8 @@ public:
   Chain(vector<glm::vec3> joints, Target * t);
   void Render(glm::mat4 view, glm::mat4 proj);
   void Solve();
+  void Backward(); // Put second endpoint at target and work backwards
+  void Forward();  // Put first endpoint at origin and work forwards
   void CalculateLinks(vector<glm::vec3> joints, vector<float> * lengths, vector<glm::quat> * directions);
   
   unsigned long size;
@@ -49,5 +51,6 @@ private:
   vector<glm::vec3> joints; // Joints themselves
   vector<Segment> segments; // The pieces that actually get rendered
   Target * target;
+  float tolerance = 0.01f;
   
 };

@@ -70,10 +70,10 @@ int main()
 
   // Load joints
   vector<glm::vec3> joints;
-  joints.push_back(glm::vec3(0, 0, 0));
-  joints.push_back(glm::vec3(0, 0.5, 0));
-  joints.push_back(glm::vec3(0.5, 0.5, 0));
-  joints.push_back(glm::vec3(1, 0, 0));
+  for(int i = 0; i < 10; ++i) {
+    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    joints.push_back(glm::vec3(0, r, 0));
+  }
   
   // Load our model object
   Target target;

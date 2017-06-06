@@ -41,10 +41,47 @@ void Chain::Solve() {
     vector<float> lengths;
     vector<glm::quat> directions;
     CalculateLinks(joints, &lengths, &directions);
-    
-    for(int i = 0; i < lengths.size(); ++i) {
-      segments[i].Set(joints[i], lengths[i], directions[i]);
+  
+  } else { // Target is in reach, use FABRIK to solve both back and forwards
+    int count = 0;
+    float difference = glm::length(joints[joints.size() - 1] - target->position);
+    while(difference > tolerance) {
+      Backward();
+      Forward();
+      difference = glm::length(joints[joints.size() - 1] - target->position);
+      count++;
+      
+      if(count > 10) break;
     }
+
+  }
+  
+  vector<float> lengths;
+  vector<glm::quat> directions;
+  CalculateLinks(joints, &lengths, &directions);
+  
+  for(int i = 0; i < lengths.size(); ++i) {
+    segments[i].Set(joints[i], lengths[i], directions[i]);
+  }
+}
+
+void Chain::Backward() {
+  auto end = joints.end() - 1;
+  *end = target->position;
+  for(int i = int(joints.size() - 2); i >= 0; --i) {
+    float r = glm::length(joints[i+1] - joints[i]);
+    float l = segments[i].magnitude / r;
+    joints[i] = (1 - l) * joints[i+1] + l * joints[i];
+  }
+}
+
+void Chain::Forward() {
+  auto beg = joints.begin();
+  *beg = origin;
+  for(int i = 0; i < joints.size() - 1; ++i) {
+    float r = glm::length(joints[i+1] - joints[i]);
+    float l = segments[i].magnitude / r;
+    joints[i + 1] = (1 - l) * joints[i] + l * joints[i+1];
   }
 }
 

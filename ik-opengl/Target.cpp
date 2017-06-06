@@ -16,7 +16,7 @@ Target::Target() {
   objectModel = modelM;
   
   // Sets the position / rotation / scale
-  position = glm::vec3(0, 0, 0);
+  position = glm::vec3(1, 1, 0);
   scale = glm::vec3 (.05f, .05f, .05f);
   pitch = 0.0f;
   yaw = 0.0f;
