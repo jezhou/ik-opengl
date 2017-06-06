@@ -1,5 +1,7 @@
 // Std. Includes
 #include <string>
+#include <iostream>
+#include <cstring>
 
 // GLEW
 #define GLEW_STATIC
@@ -13,6 +15,7 @@
 #include "Camera.h"
 #include "Target.h"
 #include "Chain.h"
+#include "Leap.h"
 
 // GLM Mathemtics
 #include <glm/glm.hpp>
@@ -26,6 +29,7 @@ GLuint screenWidth = 800, screenHeight = 600;
 void key_callback   (GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void Do_Movement(Target * target);
+glm::vec3 ProcessFrame(const Leap::Controller & controller, Target * target);
 
 // Camera
 Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
@@ -79,6 +83,9 @@ int main()
   Target target;
   Chain chain(joints, &target);
   
+  // Leap motion stuff
+  Leap::Controller controller;
+  
   // Game loop
   while(!glfwWindowShouldClose(window))
   {
@@ -94,7 +101,11 @@ int main()
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    Do_Movement(&target);
+    //Do_Movement(&target);
+    glm::vec3 pos = ProcessFrame(controller, &target);
+    pos /= 40.0f;
+    pos = pos - glm::vec3(0, 5.0f, 0);
+    target.position = pos;
     
     // Transformation matrices
     glm::mat4 projection = glm::perspective(camera.Zoom, (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
@@ -154,3 +165,29 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 }
 
 #pragma endregion
+
+// Leap motion stuff
+
+const std::string fingerNames[] = {"Thumb", "Index", "Middle", "Ring", "Pinky"};
+const std::string boneNames[] = {"Metacarpal", "Proximal", "Middle", "Distal"};
+const std::string stateNames[] = {"STATE_INVALID", "STATE_START", "STATE_UPDATE", "STATE_END"};
+
+glm::vec3 ProcessFrame(const Leap::Controller & controller, Target * target) {
+  // Get the most recent frame and report some basic information
+  const Leap::Frame frame = controller.frame();
+  
+  Leap::HandList hands = frame.hands();
+  for (Leap::HandList::const_iterator hl = hands.begin(); hl != hands.end(); ++hl) {
+    // Get the first hand
+    const Leap::Hand hand = *hl;
+    if(hand.isRight()) {
+      Leap::Vector pos = hand.palmPosition();
+      return glm::vec3(pos.x, pos.y, pos.z);
+    }
+    
+  }
+  
+  return target->position;
+
+}
+
