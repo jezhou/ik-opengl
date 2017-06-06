@@ -29,7 +29,7 @@ GLuint screenWidth = 800, screenHeight = 600;
 void key_callback   (GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void Do_Movement(Target * target);
-glm::vec3 ProcessFrame(const Leap::Controller & controller, Target * target);
+void ProcessFrame(const Leap::Controller & controller, Target * target);
 
 // Camera
 Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
@@ -85,10 +85,17 @@ int main()
   
   // Leap motion stuff
   Leap::Controller controller;
+  bool controller_msg_displayed = false;
   
   // Game loop
   while(!glfwWindowShouldClose(window))
   {
+    if(controller.isConnected() && !controller_msg_displayed) {
+      cout << "Leap Motion is connected." << endl;
+      controller_msg_displayed = true;
+    }
+    
+      
     // Set frame time
     GLfloat currentFrame = glfwGetTime();
     deltaTime = currentFrame - lastFrame;
@@ -101,11 +108,8 @@ int main()
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    //Do_Movement(&target);
-    glm::vec3 pos = ProcessFrame(controller, &target);
-    pos /= 40.0f;
-    pos = pos - glm::vec3(0, 5.0f, 0);
-    target.position = pos;
+    Do_Movement(&target);
+    ProcessFrame(controller, &target);
     
     // Transformation matrices
     glm::mat4 projection = glm::perspective(camera.Zoom, (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
@@ -172,22 +176,33 @@ const std::string fingerNames[] = {"Thumb", "Index", "Middle", "Ring", "Pinky"};
 const std::string boneNames[] = {"Metacarpal", "Proximal", "Middle", "Distal"};
 const std::string stateNames[] = {"STATE_INVALID", "STATE_START", "STATE_UPDATE", "STATE_END"};
 
-glm::vec3 ProcessFrame(const Leap::Controller & controller, Target * target) {
+void ProcessFrame(const Leap::Controller & controller, Target * target) {
   // Get the most recent frame and report some basic information
   const Leap::Frame frame = controller.frame();
+  glm::vec3 pos = target->position;
   
+  // Right now, this just gets the tip of the right index finger and tracks its position.
   Leap::HandList hands = frame.hands();
   for (Leap::HandList::const_iterator hl = hands.begin(); hl != hands.end(); ++hl) {
-    // Get the first hand
     const Leap::Hand hand = *hl;
     if(hand.isRight()) {
-      Leap::Vector pos = hand.palmPosition();
-      return glm::vec3(pos.x, pos.y, pos.z);
+      Leap::FingerList fl = hand.fingers();
+      for(auto it = fl.begin(); it != fl.end(); ++it) {
+        Leap::Finger f = *it;
+        if(f.type() == Leap::Finger::TYPE_INDEX) {
+          Leap::Vector leap_pos = f.tipPosition();
+          pos = glm::vec3(leap_pos.x, leap_pos.y, leap_pos.z);
+          pos /= 40.0f;
+          pos = pos - glm::vec3(0, 5.0f, 0);
+          break;
+        }
+      }
+      break;
     }
     
   }
   
-  return target->position;
+  target->position = pos;
 
 }
 

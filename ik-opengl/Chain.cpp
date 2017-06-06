@@ -31,7 +31,6 @@ void Chain::Solve() {
   
   // Target is out of reach; fully extend the arm
   if (current_distance > total_length) {
-    cout << "Target out of reach! Elongating chain..." << endl;
     for(int i = 0; i < joints.size() - 1; ++i) {
       float r = glm::length(target->position - joints[i]);
       float l = segments[i].magnitude / r;
