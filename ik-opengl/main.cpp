@@ -109,7 +109,8 @@ int main()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     Do_Movement(&target);
-    ProcessFrame(controller, &target);
+    
+    if(controller.isConnected()) ProcessFrame(controller, &target);
     
     // Transformation matrices
     glm::mat4 projection = glm::perspective(camera.Zoom, (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
