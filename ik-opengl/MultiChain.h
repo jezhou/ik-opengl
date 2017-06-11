@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <stack>
 
 #include "Chain.h"
 
@@ -38,6 +39,7 @@ public:
   MultiChain(vector<Chain*> chains);
   bool Insert(ChainNode * root, Chain * chain);
   void Solve();
+  void Render(glm::mat4 view, glm::mat4 proj);
 
   ChainNode * root;
 };

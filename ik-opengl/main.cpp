@@ -125,11 +125,7 @@ int main()
     glm::mat4 view = camera.GetViewMatrix();
     target.Render(view, projection);
     //chain.Solve();
-    chain.root->value->Render(view, projection);
-    chain.root->children->at(0)->value->Render(view, projection);
-    
-    chain.root->children->at(1)->value->Solve();
-    chain.root->children->at(1)->value->Render(view, projection);
+    chain.Render(view, projection);
     
     
     // Swap the buffers

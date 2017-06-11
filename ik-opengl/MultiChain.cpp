@@ -56,3 +56,22 @@ void MultiChain::Solve() {
   
   
 }
+
+void MultiChain::Render(glm::mat4 view, glm::mat4 proj) {
+  
+  // Traverse tree and render each chain. Doesn't really matter in what order
+  // Not using recursion because don't want to add an unnecessary parameter lol
+  
+  stack<ChainNode*> traverse;
+  traverse.push(root);
+  
+  while(!traverse.empty()) {
+    ChainNode * cur = traverse.top();
+    cur->value->Render(view, proj);
+    traverse.pop();
+    for(auto it = cur->children->begin(); it != cur->children->end(); ++it) {
+      traverse.push(*it);
+    }
+  }
+  
+}
