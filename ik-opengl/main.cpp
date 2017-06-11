@@ -124,7 +124,8 @@ int main()
     
     glm::mat4 view = camera.GetViewMatrix();
     target.Render(view, projection);
-    //chain.Solve();
+    
+    chain.Solve();
     chain.Render(view, projection);
     
     // Swap the buffers

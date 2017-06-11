@@ -145,3 +145,11 @@ void Chain::Render(glm::mat4 view, glm::mat4 proj) {
     it->Render(view, proj);
   }
 }
+
+glm::vec3 Chain::GetFirstJoint() {
+  return joints[0];
+}
+
+void Chain::SetFirstJoint(glm::vec3 joint) {
+  joints[0] = joint;
+}

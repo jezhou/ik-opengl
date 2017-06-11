@@ -16,6 +16,8 @@ MultiChain::MultiChain(vector<Chain*> chains) {
   root->children = new vector<ChainNode*>();
   bool success = false;
   
+  origin = root->value->origin;
+  
   for(auto it = chains.begin() + 1; it != chains.end(); ++it) {
     Chain * current = *it;
     success = true && Insert(root, current);
@@ -34,7 +36,9 @@ bool MultiChain::Insert(ChainNode * root, Chain * chain) {
     new_node->value = chain;
     new_node->parent = root;
     new_node->children = new vector<ChainNode*>();
+    
     root->children->push_back(new_node);
+    root->value->target = new Target();
     
     // if this node is a leaf, flag it. Otherwise, unflag it
     if(leaves[root]) leaves[root] = false;
@@ -59,8 +63,50 @@ bool MultiChain::Insert(ChainNode * root, Chain * chain) {
 
 void MultiChain::Solve() {
   
+  root->value->origin = origin;
+  root->value->SetFirstJoint(origin);
   
+  Backward(root);
+  root->value->Solve();
+  Forward(root);
   
+}
+
+void MultiChain::Backward(ChainNode * root) {
+  
+  if(root->children->size()) {
+    for(auto it = root->children->begin(); it != root->children->end(); ++it) {
+      Backward(*it);
+    }
+    
+    // Calculate the centroid
+    glm::vec3 centroid;
+    int i = 0;
+    for(auto it = root->children->begin(); it != root->children->end(); ++it) {
+      ChainNode * node = *it;
+      centroid += node->value->GetFirstJoint();
+      ++i;
+    }
+    centroid = centroid / (float)i;
+    
+    // Set the centroid to the target; this should solve toward the centroid now
+    root->value->target->position = centroid;
+  }
+  
+  if(root->parent) root->value->Backward();
+}
+
+void MultiChain::Forward(ChainNode * root) {
+  if(root->children->size()) {
+    for(auto it = root->children->begin(); it != root->children->end(); ++it) {
+      Forward(*it);
+    }
+  }
+  
+  if(root->parent) {
+    root->value->origin = root->parent->value->end;
+    root->value->Forward();
+  }
 }
 
 void MultiChain::Render(glm::mat4 view, glm::mat4 proj) {
@@ -75,6 +121,7 @@ void MultiChain::Render(glm::mat4 view, glm::mat4 proj) {
     ChainNode * cur = traverse.top();
     
     cur->value->Render(view, proj);
+    cur->value->target->Render(view, proj);
     traverse.pop();
     for(auto it = cur->children->begin(); it != cur->children->end(); ++it) {
       traverse.push(*it);

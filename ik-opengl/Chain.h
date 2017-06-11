@@ -37,16 +37,19 @@ public:
   void Backward(); // Put second endpoint at target and work backwards
   void Forward();  // Put first endpoint at origin and work forwards
   void CalculateLinks(vector<glm::vec3> joints, vector<float> * lengths, vector<glm::quat> * directions);
+  glm::vec3 GetFirstJoint();
+  void SetFirstJoint(glm::vec3 joint);
+  
   
   unsigned long size;
   float total_length;
   glm::vec3 origin;
   glm::vec3 end;
+  Target * target;
   
 private:
   vector<glm::vec3> joints; // Joints themselves
   vector<Segment> segments; // The pieces that actually get rendered
-  Target * target;
   float tolerance = 0.01f;
   
 };

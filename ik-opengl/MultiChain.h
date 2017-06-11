@@ -44,4 +44,9 @@ public:
 
   ChainNode * root;
   map<ChainNode*, bool> leaves;
+  glm::vec3 origin;
+  
+private:
+  void Forward(ChainNode * root);
+  void Backward(ChainNode * root);
 };
