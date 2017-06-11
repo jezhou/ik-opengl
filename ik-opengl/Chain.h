@@ -28,15 +28,10 @@
 
 const glm::vec3 ref_rot_vector(0, 0, -1);
 
-struct Link {
-  glm::vec3 joint;
-  float length;
-  glm::quat dir;
-};
-
 class Chain {
 public:
   Chain(vector<glm::vec3> joints, Target * t);
+  Chain(glm::vec3 origin, glm::vec3 end, Target * t, int partitions = 5);
   void Render(glm::mat4 view, glm::mat4 proj);
   void Solve();
   void Backward(); // Put second endpoint at target and work backwards
@@ -46,6 +41,7 @@ public:
   unsigned long size;
   float total_length;
   glm::vec3 origin;
+  glm::vec3 end;
   
 private:
   vector<glm::vec3> joints; // Joints themselves

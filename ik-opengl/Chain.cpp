@@ -25,6 +25,36 @@ Chain::Chain(vector<glm::vec3> joints, Target * t) {
   
 }
 
+Chain::Chain(glm::vec3 origin, glm::vec3 end, Target * t, int partitions) {
+  
+  vector<float> lengths;
+  vector<glm::quat> directions;
+  vector<glm::vec3> joints;
+  
+  glm::vec3 partition_checkpoint = origin;
+  glm::vec3 dir = glm::normalize(end - origin);
+  float magnitude = glm::length(end - origin);
+  float partial_mag = magnitude / (float)partitions;
+  
+  joints.push_back(origin);
+  for(int i = 1; i <= partitions; ++i) {
+    glm::vec3 to_insert = partition_checkpoint + partial_mag * i * dir;
+    joints.push_back(to_insert);
+  }
+  
+  CalculateLinks(joints, &lengths, &directions);
+  
+  for(int i = 0; i < lengths.size(); ++i) {
+    segments.push_back(Segment(joints[i], lengths[i], directions[i]));
+    total_length += lengths[i];
+  }
+  
+  target = t;
+  size = joints.size();
+  this->joints = joints;
+
+}
+
 void Chain::Solve() {
   
   float current_distance = glm::length(target->position - origin);
@@ -85,9 +115,11 @@ void Chain::Forward() {
 }
 
 void Chain::CalculateLinks(vector<glm::vec3> joints, vector<float> * lengths, vector<glm::quat> * directions) {
+  
+  origin = *joints.begin();
+  end = *(joints.end() - 1);
+  
   for(auto it = joints.begin(); it != joints.end() - 1; ++it) {
-    
-    if(it == joints.begin()) origin = *it;
     
     glm::vec3 current = *it;
     glm::vec3 next = *(it + 1);

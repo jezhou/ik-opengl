@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Target.h"
 #include "Chain.h"
+#include "MultiChain.h"
 #include "Leap.h"
 
 // GLM Mathemtics
@@ -81,7 +82,13 @@ int main()
   
   // Load our model object
   Target target;
-  Chain chain(joints, &target);
+  //Chain chain(joints, &target);
+  //Chain chain(glm::vec3(0, 0, 0), glm::vec3(0, 0, 3), &target);
+  vector<Chain*> vec;
+  vec.push_back(new Chain(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), &target));
+  vec.push_back(new Chain(glm::vec3(0, 1, 0), glm::vec3(1, 1, 0), &target, 2));
+  vec.push_back(new Chain(glm::vec3(0, 1, 0), glm::vec3(-1, 2, 0), &target, 2));
+  MultiChain chain(vec);
   
   // Leap motion stuff
   Leap::Controller controller;
@@ -117,9 +124,14 @@ int main()
     
     glm::mat4 view = camera.GetViewMatrix();
     target.Render(view, projection);
-    chain.Solve();
-    chain.Render(view, projection);
-
+    //chain.Solve();
+    chain.root->value->Render(view, projection);
+    chain.root->children->at(0)->value->Render(view, projection);
+    
+    chain.root->children->at(1)->value->Solve();
+    chain.root->children->at(1)->value->Render(view, projection);
+    
+    
     // Swap the buffers
     glfwSwapBuffers(window);
   }
