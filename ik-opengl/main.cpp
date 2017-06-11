@@ -127,7 +127,6 @@ int main()
     //chain.Solve();
     chain.Render(view, projection);
     
-    
     // Swap the buffers
     glfwSwapBuffers(window);
   }

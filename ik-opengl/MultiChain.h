@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <vector>
 #include <stack>
+#include <map>
 
 #include "Chain.h"
 
@@ -42,4 +43,5 @@ public:
   void Render(glm::mat4 view, glm::mat4 proj);
 
   ChainNode * root;
+  map<ChainNode*, bool> leaves;
 };

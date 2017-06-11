@@ -9,6 +9,7 @@
 #include "MultiChain.h"
 
 MultiChain::MultiChain(vector<Chain*> chains) {
+  
   root = new ChainNode();
   root->value = *chains.begin();
   root->parent = NULL;
@@ -34,6 +35,11 @@ bool MultiChain::Insert(ChainNode * root, Chain * chain) {
     new_node->parent = root;
     new_node->children = new vector<ChainNode*>();
     root->children->push_back(new_node);
+    
+    // if this node is a leaf, flag it. Otherwise, unflag it
+    if(leaves[root]) leaves[root] = false;
+    leaves[new_node] = true;
+    
     return true;
     
   } else if(root->children->size()) {
@@ -67,6 +73,7 @@ void MultiChain::Render(glm::mat4 view, glm::mat4 proj) {
   
   while(!traverse.empty()) {
     ChainNode * cur = traverse.top();
+    
     cur->value->Render(view, proj);
     traverse.pop();
     for(auto it = cur->children->begin(); it != cur->children->end(); ++it) {
