@@ -34,7 +34,7 @@ public:
   glm::vec3 scale;
   
   // Functions
-  Target();
+  Target(int x, int y, int z);
   void Render(glm::mat4 view, glm::mat4 proj);
   void ProcessTranslation(Camera_Movement direction, GLfloat deltaTime);
   

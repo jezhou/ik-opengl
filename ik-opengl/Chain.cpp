@@ -85,6 +85,11 @@ void Chain::Solve() {
 
   }
   
+  SetSegments();
+  
+}
+
+void Chain::SetSegments() {
   vector<float> lengths;
   vector<glm::quat> directions;
   CalculateLinks(joints, &lengths, &directions);

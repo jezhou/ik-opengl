@@ -39,6 +39,7 @@ public:
   void CalculateLinks(vector<glm::vec3> joints, vector<float> * lengths, vector<glm::quat> * directions);
   glm::vec3 GetFirstJoint();
   void SetFirstJoint(glm::vec3 joint);
+  void SetSegments();
   
   
   unsigned long size;

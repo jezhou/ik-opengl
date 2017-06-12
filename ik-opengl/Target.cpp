@@ -5,7 +5,7 @@
 #include "Target.h"
 #include "Camera.h"
 
-Target::Target() {
+Target::Target(int x, int y, int z) {
   
   // Create the shader to use for the controller
   Shader modelS(vertexShaderPath, fragShaderPath);
@@ -16,7 +16,7 @@ Target::Target() {
   objectModel = modelM;
   
   // Sets the position / rotation / scale
-  position = glm::vec3(1, 1, 0);
+  position = glm::vec3(x, y, z);
   scale = glm::vec3 (.05f, .05f, .05f);
   pitch = 0.0f;
   yaw = 0.0f;

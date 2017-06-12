@@ -81,14 +81,17 @@ int main()
   }
   
   // Load our model object
-  Target target;
+  Target target(0, 0, 0);
+  Target target2(2, 0, 0);
+  Target target3(1, 1, 0);
   //Chain chain(joints, &target);
-  //Chain chain(glm::vec3(0, 0, 0), glm::vec3(0, 0, 3), &target);
+  Chain chain(glm::vec3(0, 0, 0), glm::vec3(0, 0, 2), &target);
   vector<Chain*> vec;
   vec.push_back(new Chain(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), &target));
   vec.push_back(new Chain(glm::vec3(0, 1, 0), glm::vec3(1, 1, 0), &target, 2));
-  vec.push_back(new Chain(glm::vec3(0, 1, 0), glm::vec3(-1, 2, 0), &target, 2));
-  MultiChain chain(vec);
+  vec.push_back(new Chain(glm::vec3(0, 1, 0), glm::vec3(-1, 2, 0), &target3, 2));
+  vec.push_back(new Chain(glm::vec3(0, 1, 0), glm::vec3(-1, 1.5, 0), &target2, 2));
+  MultiChain multichain(vec);
   
   // Leap motion stuff
   Leap::Controller controller;
@@ -124,9 +127,11 @@ int main()
     
     glm::mat4 view = camera.GetViewMatrix();
     target.Render(view, projection);
+    target2.Render(view, projection);
+    target3.Render(view, projection);
     
-    chain.Solve();
-    chain.Render(view, projection);
+    multichain.Solve();
+    multichain.Render(view, projection);
     
     // Swap the buffers
     glfwSwapBuffers(window);

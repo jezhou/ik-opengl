@@ -38,7 +38,7 @@ bool MultiChain::Insert(ChainNode * root, Chain * chain) {
     new_node->children = new vector<ChainNode*>();
     
     root->children->push_back(new_node);
-    root->value->target = new Target();
+    root->value->target = new Target(0, 0, 0);
     
     // if this node is a leaf, flag it. Otherwise, unflag it
     if(leaves[root]) leaves[root] = false;
@@ -90,10 +90,14 @@ void MultiChain::Backward(ChainNode * root) {
     centroid = centroid / (float)i;
     
     // Set the centroid to the target; this should solve toward the centroid now
-    root->value->target->position = centroid;
+    
+    //if(glm::length(centroid - root->value->origin) < root->value->total_length)
+      root->value->target->position = centroid;
   }
   
-  if(root->parent) root->value->Backward();
+  if(root->parent) {
+    root->value->Backward();
+  }
 }
 
 void MultiChain::Forward(ChainNode * root) {
@@ -106,6 +110,7 @@ void MultiChain::Forward(ChainNode * root) {
   if(root->parent) {
     root->value->origin = root->parent->value->end;
     root->value->Forward();
+    root->value->SetSegments();
   }
 }
 
@@ -121,7 +126,6 @@ void MultiChain::Render(glm::mat4 view, glm::mat4 proj) {
     ChainNode * cur = traverse.top();
     
     cur->value->Render(view, proj);
-    cur->value->target->Render(view, proj);
     traverse.pop();
     for(auto it = cur->children->begin(); it != cur->children->end(); ++it) {
       traverse.push(*it);
