@@ -86,6 +86,7 @@ int main()
   Target target3(1, 1, 0);
   //Chain chain(joints, &target);
   Chain chain(glm::vec3(0, 0, 0), glm::vec3(0, 0, 2), &target);
+  
   vector<Chain*> vec;
   vec.push_back(new Chain(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), &target));
   vec.push_back(new Chain(glm::vec3(0, 1, 0), glm::vec3(1, 1, 0), &target, 2));
@@ -127,11 +128,11 @@ int main()
     
     glm::mat4 view = camera.GetViewMatrix();
     target.Render(view, projection);
-    target2.Render(view, projection);
-    target3.Render(view, projection);
+    //target2.Render(view, projection);
+    //target3.Render(view, projection);
     
-    multichain.Solve();
-    multichain.Render(view, projection);
+    chain.Solve();
+    chain.Render(view, projection);
     
     // Swap the buffers
     glfwSwapBuffers(window);

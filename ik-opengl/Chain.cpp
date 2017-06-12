@@ -104,6 +104,7 @@ void Chain::Backward() {
   *end = target->position;
   for(int i = int(joints.size() - 2); i >= 0; --i) {
     float r = glm::length(joints[i+1] - joints[i]);
+    
     float l = segments[i].magnitude / r;
     joints[i] = (1 - l) * joints[i+1] + l * joints[i];
   }
@@ -114,6 +115,7 @@ void Chain::Forward() {
   *beg = origin;
   for(int i = 0; i < joints.size() - 1; ++i) {
     float r = glm::length(joints[i+1] - joints[i]);
+    
     float l = segments[i].magnitude / r;
     joints[i + 1] = (1 - l) * joints[i] + l * joints[i+1];
   }
