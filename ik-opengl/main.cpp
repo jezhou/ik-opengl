@@ -44,6 +44,13 @@ GLfloat lastFrame = 0.0f;
 // The MAIN function, from here we start our application and run our Game loop
 int main()
 {
+  
+  char desired_model[1000];
+  cout << "IK OpenGL - Jesse & Robb - CSE 163, Project 4, SP17\n1: Single chain\n2: Multichain\n3: Single Chain w/ Constraint\nEnter the model you want here: ";
+  cin >> desired_model;
+  
+  cout << desired_model << endl;
+  
   // Init GLFW
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -74,22 +81,24 @@ int main()
   glEnable(GL_MULTISAMPLE);
 
   // Load joints
-  vector<glm::vec3> joints;
-//  for(int i = 0; i < 10; ++i) {
-//    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-//    joints.push_back(glm::vec3(0, r, 0));
-//  }
+  vector<glm::vec3> joints1;
+  for(int i = 0; i < 10; ++i) {
+    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    joints1.push_back(glm::vec3(0, r, 0));
+  }
   
-  joints.push_back(glm::vec3(0, 0.0f, 0));
-  joints.push_back(glm::vec3(0, 1.0f, 0));
-  joints.push_back(glm::vec3(1.0f, 2.0f, 0));
+  vector<glm::vec3> joints2;
+  joints2.push_back(glm::vec3(0, 0.0f, 0));
+  joints2.push_back(glm::vec3(0, 1.0f, 0));
+  joints2.push_back(glm::vec3(1.0f, 2.0f, 0));
   
   // Load our model object
   Target target(1.0f, 2.0f, 0);
   Target target2(2, 0, 0);
   Target target3(1, 1, 0);
-  Chain chain(joints, &target);
-  //Chain chain(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), &target);
+  Chain chain1(joints1, &target);
+  Chain chain2(joints2, &target);
+  chain2.please_constrain = true;
   
   vector<Chain*> vec;
   vec.push_back(new Chain(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), &target));
@@ -132,11 +141,22 @@ int main()
     
     glm::mat4 view = camera.GetViewMatrix();
     target.Render(view, projection);
-    //target2.Render(view, projection);
-    //target3.Render(view, projection);
     
-    chain.Solve();
-    chain.Render(view, projection);
+    if(strcmp(desired_model, "1") == 0) {
+      chain1.Solve();
+      chain1.Render(view, projection);
+    } else if(strcmp(desired_model, "2") == 0) {
+      multichain.Solve();
+      multichain.Render(view, projection);
+      target2.Render(view, projection);
+      target3.Render(view, projection);
+    } else if(strcmp(desired_model, "3") == 0) {
+      chain2.Solve();
+      chain2.Render(view, projection);
+    } else {
+      cout << "Invalid chain model" << endl;
+      break;
+    }
     
     // Swap the buffers
     glfwSwapBuffers(window);

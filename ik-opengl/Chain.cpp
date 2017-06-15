@@ -117,7 +117,7 @@ void Chain::Forward() {
     float l = segments[i].magnitude / r;
     
     glm::vec3 new_point = (1 - l) * joints[i] + l * joints[i+1];
-    if(i > 0) new_point = Constrain(new_point, segments[i].magnitude, &(segments[i - 1]));
+    if(i > 0 && this->please_constrain) new_point = Constrain(new_point, segments[i].magnitude, &(segments[i - 1]));
     joints[i + 1] = new_point;
   }
 }

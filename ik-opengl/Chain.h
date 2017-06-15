@@ -48,6 +48,7 @@ public:
   glm::vec3 origin;
   glm::vec3 end;
   Target * target;
+  bool please_constrain = false;
   
 private:
   vector<glm::vec3> joints; // Joints themselves
