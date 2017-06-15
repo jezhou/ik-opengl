@@ -4,7 +4,7 @@ Forward and Backward Reaching Inverse Kinematic (FABRIK) solver. Based on [FABRI
 
 ![Alt text](./output.gif)
 
-Please read through the whole README before attempting to run the project.
+Please read through the whole README before attempting to run the project. Check out our [project writeup](https://jezhou.gitbooks.io/cse-163-inverse-kinematics/) too!
 
 # Project setup in Xcode.
 
@@ -20,7 +20,7 @@ Install through homebrew:
 2. brew install glew
 3. brew install assimp
 
-Leap Motion libraries and include files are already inside the repo. If this for some reason causes any problems, please feel free to go to the project properties and remove any references to the Leap SDK. If you have any other trouble, please do not hesitate to contact us ASAP.
+Leap Motion libraries and include files are already inside the repo. If this for some reason causes any problems, please try installing **Leap Motion SDK 2.3.1** (not the VR version, the tracking / tool version). If this is too much trouble, feel free to go to the project properties and remove any references to the Leap SDK, but you might have to delete the Leap Motion code found in `main.cpp`. If you have any other trouble, please do not hesitate to contact us ASAP.
 
 # Important Note!
 
