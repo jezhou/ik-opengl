@@ -26,7 +26,7 @@
 #include <glm/gtx/projection.hpp>
 #include <GL/glew.h>
 
-const glm::vec3 ref_rot_vector(0, 0, -1);
+const glm::vec3 ref_rot_vector(0.0f, 0.0f, -1.0f);
 
 class Chain {
 public:
@@ -36,11 +36,12 @@ public:
   void Solve();
   void Backward(); // Put second endpoint at target and work backwards
   void Forward();  // Put first endpoint at origin and work forwards
+  glm::vec3 Constrain(glm::vec3 point, float true_length, Segment * seg);
+  
   void CalculateLinks(vector<glm::vec3> joints, vector<float> * lengths, vector<glm::quat> * directions);
   glm::vec3 GetFirstJoint();
   void SetFirstJoint(glm::vec3 joint);
   void SetSegments();
-  
   
   unsigned long size;
   float total_length;

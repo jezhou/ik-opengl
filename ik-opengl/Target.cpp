@@ -55,7 +55,7 @@ void Target::Render(glm::mat4 view, glm::mat4 proj) {
 }
 
 void Target::ProcessTranslation(Camera_Movement direction, GLfloat deltaTime) {
-  GLfloat velocity = 3.0f * deltaTime;
+  GLfloat velocity = 1.0f * deltaTime;
   if (direction == UP)
     this->position.y += 1.0f * velocity;
   if (direction == DOWN)

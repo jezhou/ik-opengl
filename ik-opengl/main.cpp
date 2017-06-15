@@ -75,17 +75,21 @@ int main()
 
   // Load joints
   vector<glm::vec3> joints;
-  for(int i = 0; i < 10; ++i) {
-    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    joints.push_back(glm::vec3(0, r, 0));
-  }
+//  for(int i = 0; i < 10; ++i) {
+//    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+//    joints.push_back(glm::vec3(0, r, 0));
+//  }
+  
+  joints.push_back(glm::vec3(0, 0.0f, 0));
+  joints.push_back(glm::vec3(0, 1.0f, 0));
+  joints.push_back(glm::vec3(1.0f, 2.0f, 0));
   
   // Load our model object
-  Target target(0, 0, 0);
+  Target target(1.0f, 2.0f, 0);
   Target target2(2, 0, 0);
   Target target3(1, 1, 0);
-  //Chain chain(joints, &target);
-  Chain chain(glm::vec3(0, 0, 0), glm::vec3(0, 0, 2), &target);
+  Chain chain(joints, &target);
+  //Chain chain(glm::vec3(0, 0, 0), glm::vec3(0, 0, 2), &target);
   
   vector<Chain*> vec;
   vec.push_back(new Chain(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), &target));
