@@ -89,7 +89,7 @@ int main()
   Target target2(2, 0, 0);
   Target target3(1, 1, 0);
   Chain chain(joints, &target);
-  //Chain chain(glm::vec3(0, 0, 0), glm::vec3(0, 0, 2), &target);
+  //Chain chain(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), &target);
   
   vector<Chain*> vec;
   vec.push_back(new Chain(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), &target));

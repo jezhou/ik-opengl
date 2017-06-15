@@ -127,14 +127,20 @@ void Segment::Render(glm::mat4 view, glm::mat4 proj) {
 }
 
 glm::mat4 Segment::GetFaceNormals() {
-  
-  glm::vec3 up = glm::vec3(0, 1, 0);
-  glm::vec3 right = glm::cross(glm::vec3(0, 0, -1), up);
+//  
+//  glm::vec3 up = glm::vec3(0, 1, 0);
+//  glm::vec3 right = glm::cross(glm::vec3(0, 0, -1), up);
 
-  glm::vec3 up_relative = up * glm::mat3(glm::toMat4(quat));
-  glm::vec3 right_relative = right * glm::mat3(glm::toMat4(quat));
+//  glm::vec3 up_relative = up * glm::mat3(glm::toMat4(quat));
+//  glm::vec3 right_relative = right * glm::mat3(glm::toMat4(quat));
+//  glm::vec3 left_relative = -1.0f * right_relative;
+//  glm::vec3 down_relative = -1.0f * up_relative;
+  
+  glm::vec3 up_relative = glm::cross(glm::vec3(0, 0, -1), glm::normalize(end_position - position));
+  glm::vec3 right_relative = glm::cross(glm::vec3(0, 0, -1), up_relative);
   glm::vec3 left_relative = -1.0f * right_relative;
   glm::vec3 down_relative = -1.0f * up_relative;
+
   
   return glm::mat4(
                    glm::vec4(glm::normalize(up_relative), 0.0f),

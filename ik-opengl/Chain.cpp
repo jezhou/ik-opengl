@@ -159,6 +159,7 @@ glm::vec3 Chain::Constrain(glm::vec3 point, float true_length, Segment * seg) {
   float     scalar = glm::dot(point - seg->end_position, line_dir);
   glm::vec3 projected_point = scalar * line_dir + seg->end_position;
   
+  
   if(debug) {
     float angle = glm::acos(scalar/ (glm::length(point - seg->end_position) * glm::length(line_dir)));
     cout << "angle: " << glm::degrees(angle) << endl;
@@ -168,9 +169,11 @@ glm::vec3 Chain::Constrain(glm::vec3 point, float true_length, Segment * seg) {
   
   glm::vec3 adjusted_distance = point - projected_point;
   if(scalar < 0) {
-    projected_point = -projected_point;
+    glm::vec3 relative_projected_point = projected_point - seg->end_position;
+    relative_projected_point = - relative_projected_point;
+    projected_point = relative_projected_point + seg->end_position;
   }
-  
+
   // Get the 2D axes we will be using for this problem
   glm::mat4 face_normals = seg->GetFaceNormals();
   glm::vec3 up =    glm::normalize(glm::vec3(face_normals[0]));
@@ -178,8 +181,8 @@ glm::vec3 Chain::Constrain(glm::vec3 point, float true_length, Segment * seg) {
   glm::vec3 left =  glm::normalize(glm::vec3(face_normals[2]));
   glm::vec3 right = glm::normalize(glm::vec3(face_normals[3]));
   
-  glm::vec3 x_axis = glm::length(left - point) < glm::length(right - point) ? left : right;
-  glm::vec3 y_axis = glm::length(up - point) < glm::length(down - point) ? up : down;
+  glm::vec3 x_axis = glm::length(left - relative_point) < glm::length(right - relative_point) ? left : right;
+  glm::vec3 y_axis = glm::length(up - relative_point) < glm::length(down - relative_point) ? up : down;
   
   float x_aspect = glm::dot(adjusted_distance, x_axis);
   float y_aspect = glm::dot(adjusted_distance, y_axis);
@@ -193,7 +196,7 @@ glm::vec3 Chain::Constrain(glm::vec3 point, float true_length, Segment * seg) {
   
   // Calculate the cone cross section
   float proj_length = glm::length(projected_point - seg->end_position);
-  float up_cross = proj_length * glm::tan(glm::radians(seg->constraint_cone[0])); /// TODO: SM WRON GHER
+  float up_cross = proj_length * glm::tan(glm::radians(seg->constraint_cone[0]));
   float down_cross = -(proj_length * glm::tan(glm::radians(seg->constraint_cone[1])));
   float left_cross = -(proj_length * glm::tan(glm::radians(seg->constraint_cone[2])));
   float right_cross = proj_length * glm::tan(glm::radians(seg->constraint_cone[3]));
@@ -206,15 +209,16 @@ glm::vec3 Chain::Constrain(glm::vec3 point, float true_length, Segment * seg) {
   float ellipse_point = glm::pow(x_aspect, 2) / glm::pow(x_bound, 2) + glm::pow(y_aspect, 2) / glm::pow(y_bound, 2);
   
   //if(debug) cout << "ellipse point: " << ellipse_point << endl;
-  cout << "xbound " << x_bound << "  ybound " << y_bound << endl;
+  cout << "y_aspect " << y_aspect << "  x_aspect " << x_bound << endl;
   
   // If the point we calculated is outside of this ellipse, then we must constrain the joint
   if(ellipse_point > 1 || scalar < 0) {
     cout << "Not in bounds!" << endl;
-//    float a = glm::atan(y_aspect, x_aspect);
-//    float x = x_bound * glm::cos(a);
-//    float y = y_bound * glm::sin(a);
-//    retval = glm::normalize((projected_point - seg->end_position) + (x_axis * x) + (y_axis * y)) * 1.414f; //glm::length(relative_point);
+    float a = glm::atan(y_aspect, x_aspect);
+    float x = x_bound * glm::cos(a);
+    float y = y_bound * glm::sin(a);
+    
+    retval = glm::normalize((projected_point - seg->end_position) + (x_axis * x) + (y_axis * y)) * glm::length(relative_point) + seg->end_position;
   } else {
     cout << "In bounds!" << endl;
   }
